@@ -9,28 +9,81 @@ namespace Murmur\Collections;
  * for creating custom post types. Version:      1.0.0 Author:       Murmur Creative Author URI:
  * https://murmurcreative.com License:      Proprietary
  */
-class Collection
+abstract class Collection
 {
-    private $type;
-    private $label;
-    private $arguments;
-    private $names;
+    protected $type;
+    protected $label;
+    protected $arguments;
+    protected $names;
 
-    public function __construct($type, $label, $arguments = [], $names = [])
+    /**
+     * Returns the name of this post type, i.e. `sandwich-fixing`.
+     * Should be singular.
+     *
+     * @return string
+     */
+    protected abstract function type(): string;
+
+    /**
+     * Returns the human name of this post type, i.e. `Sandwich Fixing`.
+     * Should be singular.
+     *
+     * @return string
+     */
+    protected abstract function label(): string;
+
+    /**
+     * Returns array of arguments for post type.
+     *
+     * Can be overridden by extending class to provide custom arguments;
+     * otherwise returns an empty array (which will apply only default values).
+     *
+     * @return array
+     */
+    protected function arguments(): array
     {
-        $names = array_merge([
-            'singular' => $label,
-            'slug'     => $type,
-        ], $names);
+        return [];
+    }
 
-        $arguments = array_merge([
+    /**
+     * Returns array of argument for post type names.
+     *
+     * Can be overridden by extending class to provide custom arguments;
+     * otherwise returns an empty array (which will apply only default values.)
+     *
+     * @return array
+     */
+    protected function names(): array
+    {
+        return [];
+    }
+
+    /**
+     * Provides an opportunity to run startup tasks.
+     *
+     * By default this does nothing, but it can be used in extended classes
+     * to run various startup tasks, such as modifying post type settings via
+     * methods.
+     */
+    protected function setup(): void
+    {
+        /** Do something */
+    }
+
+    public function __construct()
+    {
+        $this->type  = $this->type();
+        $this->label = $this->label();
+        $this->names = array_merge([
+            'singular' => $this->label,
+            'slug'     => $this->type,
+        ], $this->names());
+
+        $this->arguments = array_merge([
             'supports' => ['title', 'editor', 'excerpt', 'thumbnail'],
-        ], $arguments);
+        ], $this->arguments());
 
-        $this->type      = $type;
-        $this->label     = $label;
-        $this->arguments = $arguments;
-        $this->names     = $names;
+        $this->setup();
     }
 
     /**
@@ -40,9 +93,9 @@ class Collection
      *
      * @return $this
      */
-    public function supportsGutenberg(bool $enable)
+    protected function supportsGutenberg(bool $enable)
     {
-        if (!isset($this->arguments['show_in_rest'])) {
+        if ( ! isset($this->arguments['show_in_rest'])) {
             $this->arguments['show_in_rest'] = true;
         }
 
@@ -56,7 +109,7 @@ class Collection
      *
      * @return $this
      */
-    public function noPagination()
+    protected function noPagination()
     {
         $this->safelySetArrayArgument('archive', true, 'nopaging');
 
@@ -72,7 +125,7 @@ class Collection
      *
      * @return $this
      */
-    public function icon(string $string)
+    protected function icon(string $string)
     {
         $this->arguments['menu_icon'] = $string;
 
@@ -86,7 +139,7 @@ class Collection
      *
      * @return Collection
      */
-    public function supportsTitle(bool $enabled = true)
+    protected function supportsTitle(bool $enabled = true)
     {
         if ($enabled) {
             $this->safelySetArrayArgument('supports', 'title');
@@ -104,7 +157,7 @@ class Collection
      *
      * @return Collection
      */
-    public function supportsEditor(bool $enabled = true)
+    protected function supportsEditor(bool $enabled = true)
     {
         if ($enabled) {
             $this->safelySetArrayArgument('supports', 'editor');
@@ -122,7 +175,7 @@ class Collection
      *
      * @return Collection
      */
-    public function supportsExcerpt(bool $enabled = true)
+    protected function supportsExcerpt(bool $enabled = true)
     {
         if ($enabled) {
             $this->safelySetArrayArgument('supports', 'excerpt');
@@ -140,7 +193,7 @@ class Collection
      *
      * @return Collection
      */
-    public function supportsThumbnail(bool $enabled = true)
+    protected function supportsThumbnail(bool $enabled = true)
     {
         if ($enabled) {
             $this->safelySetArrayArgument('supports', 'thumbnail');
@@ -158,7 +211,7 @@ class Collection
      *
      * @return $this
      */
-    public function supportsFeaturedImage(bool $enabled = true)
+    protected function supportsFeaturedImage(bool $enabled = true)
     {
         return $this->supportsThumbnail($enabled);
     }
@@ -172,7 +225,7 @@ class Collection
      *
      * @return $this
      */
-    public function perPage(int $number)
+    protected function perPage(int $number)
     {
         if (isset($this->arguments['archive']) && isset($this->arguments['archive']['nopaging']) && true === $this->arguments['archive']['nopaging']) {
             return $this;
@@ -196,7 +249,7 @@ class Collection
      *
      * @return Collection
      */
-    public function labels(array $labels)
+    protected function labels(array $labels)
     {
         $currentLabels = [];
         if (isset($this->arguments['labels'])) {
@@ -213,7 +266,7 @@ class Collection
      *
      * @return Collection
      */
-    public function labelMenu(string $label)
+    protected function labelMenu(string $label)
     {
         return $this->safelySetArrayArgument('labels', $label, 'menu_name');
     }
@@ -225,7 +278,7 @@ class Collection
      *
      * @return $this
      */
-    public function featuredImageName(string $label)
+    protected function featuredImageName(string $label)
     {
         $this->arguments['featured_image'] = $label;
 
@@ -239,7 +292,7 @@ class Collection
      *
      * @return $this
      */
-    public function enterTitleString(string $label)
+    protected function enterTitleString(string $label)
     {
         $this->arguments['enter_title_here'] = $label;
 
@@ -253,7 +306,7 @@ class Collection
      *
      * @return $this
      */
-    public function enableQuickEdit(bool $enable)
+    protected function enableQuickEdit(bool $enable)
     {
         $this->arguments['quick_edit'] = $enable;
 
@@ -267,7 +320,7 @@ class Collection
      *
      * @return $this
      */
-    public function atAGlance(bool $enable)
+    protected function atAGlance(bool $enable)
     {
         $this->arguments['dashboard_glance'] = $enable;
 
@@ -281,7 +334,7 @@ class Collection
      *
      * @return $this
      */
-    public function recentlyPublished(bool $enable)
+    protected function recentlyPublished(bool $enable)
     {
         $this->arguments['dashboard_activity'] = $enable;
 
@@ -316,7 +369,7 @@ class Collection
      *
      * @return Collection
      */
-    private function safelySetArrayArgument(string $arrayName, $argument, string $key = null)
+    protected function safelySetArrayArgument(string $arrayName, $argument, string $key = null)
     {
         if ( ! isset($this->arguments[$arrayName])) {
             $this->arguments[$arrayName] = [];
@@ -338,7 +391,7 @@ class Collection
      *
      * @return $this
      */
-    private function safelyUnsetArrayValue(string $arrayName, $value)
+    protected function safelyUnsetArrayValue(string $arrayName, $value)
     {
         if ( ! isset($this->arguments[$arrayName])) {
             return $this; // The array doesn't exist, so nothing to unset
@@ -359,7 +412,7 @@ class Collection
      *
      * @return $this
      */
-    private function safelyUnsetArrayKey(string $arrayName, string $key)
+    protected function safelyUnsetArrayKey(string $arrayName, string $key)
     {
         if ( ! isset($this->arguments[$arrayName])) {
             return $this; // The array doesn't exist, so nothing to unset
@@ -370,7 +423,7 @@ class Collection
         return $this;
     }
 
-    private function installEcptsWarning()
+    protected function installEcptsWarning()
     {
         add_action('admin_notices', function () {
             echo <<<EOT
