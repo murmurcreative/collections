@@ -1,0 +1,3 @@
+= Collections
+
+A wrapper around the excellent https://github.com/johnbillion/extended-cpts/[extended-cpts] to help us make building new post types a little more streamlines and eloquent.
