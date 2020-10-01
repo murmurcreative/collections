@@ -380,4 +380,20 @@ class Collection
 EOT;
         });
     }
+
+    /**
+     * Prefix a string w/ the post type string.
+     * Optionally pass a second argument to override the default "_" separator.
+     *
+     * This is especially useful for things like field naming.
+     *
+     * @param string $string
+     * @param string $separator
+     *
+     * @return string
+     */
+    public function prefix(string $string, string $separator = "_"): string
+    {
+        return sprintf("%s%s%s", $this->type, $separator, $string);
+    }
 }
