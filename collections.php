@@ -22,7 +22,7 @@ abstract class Collection
      *
      * @return string
      */
-    protected abstract function type(): string;
+    public abstract function type(): string;
 
     /**
      * Returns the human name of this post type, i.e. `Sandwich Fixing`.
@@ -30,7 +30,7 @@ abstract class Collection
      *
      * @return string
      */
-    protected abstract function label(): string;
+    public abstract function label(): string;
 
     /**
      * Returns array of arguments for post type.
