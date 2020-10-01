@@ -18,10 +18,10 @@ class Collection
 
     public function __construct($type, $label, $arguments = [], $names = [])
     {
-        $names['singular'] = $label;
-        if ( ! isset($names['slug'])) {
-            $names['slug'] = $type;
-        }
+        $names = array_merge([
+            'singular' => $label,
+            'slug'     => $type,
+        ], $names);
 
         $arguments = array_merge([
             'supports' => ['title', 'editor', 'excerpt', 'thumbnail'],
@@ -40,9 +40,13 @@ class Collection
      *
      * @return $this
      */
-    public function gutenberg(bool $enable = false)
+    public function supportsGutenberg(bool $enable)
     {
-        $this->arguments['show_in_rest'] = $enable;
+        if (!isset($this->arguments['show_in_rest'])) {
+            $this->arguments['show_in_rest'] = true;
+        }
+
+        $this->arguments['block_editor'] = $enable;
 
         return $this;
     }
@@ -156,9 +160,7 @@ class Collection
      */
     public function supportsFeaturedImage(bool $enabled = true)
     {
-        $this->supportsThumbnail($enabled);
-
-        return $this;
+        return $this->supportsThumbnail($enabled);
     }
 
     /**
@@ -181,6 +183,107 @@ class Collection
                 $query->set('posts_per_page', $number);
             }
         });
+
+        return $this;
+    }
+
+    /**
+     * Set labels in bulk as an array.
+     *
+     * For options see: https://developer.wordpress.org/reference/functions/get_post_type_labels/
+     *
+     * @param array $labels
+     *
+     * @return Collection
+     */
+    public function labels(array $labels)
+    {
+        $currentLabels = [];
+        if (isset($this->arguments['labels'])) {
+            $currentLabels = $this->arguments['labels'];
+        }
+
+        return $this->safelySetArrayArgument('labels', array_merge($currentLabels, $labels));
+    }
+
+    /**
+     * Set the menu name.
+     *
+     * @param string $label
+     *
+     * @return Collection
+     */
+    public function labelMenu(string $label)
+    {
+        return $this->safelySetArrayArgument('labels', $label, 'menu_name');
+    }
+
+    /**
+     * Change the name of the "Featured Image" field
+     *
+     * @param string $label
+     *
+     * @return $this
+     */
+    public function featuredImageName(string $label)
+    {
+        $this->arguments['featured_image'] = $label;
+
+        return $this;
+    }
+
+    /**
+     * Change the "Enter title here" text
+     *
+     * @param string $label
+     *
+     * @return $this
+     */
+    public function enterTitleString(string $label)
+    {
+        $this->arguments['enter_title_here'] = $label;
+
+        return $this;
+    }
+
+    /**
+     * Enable/disable Quick Edit (default true)
+     *
+     * @param bool $enable
+     *
+     * @return $this
+     */
+    public function enableQuickEdit(bool $enable)
+    {
+        $this->arguments['quick_edit'] = $enable;
+
+        return $this;
+    }
+
+    /**
+     * Add/remove from Dashboard's "At a Glance" (default true)
+     *
+     * @param bool $enable
+     *
+     * @return $this
+     */
+    public function atAGlance(bool $enable)
+    {
+        $this->arguments['dashboard_glance'] = $enable;
+
+        return $this;
+    }
+
+    /**
+     * Add/remove from Dashboard's "Recently Published" (default true)
+     *
+     * @param bool $enable
+     *
+     * @return $this
+     */
+    public function recentlyPublished(bool $enable)
+    {
+        $this->arguments['dashboard_activity'] = $enable;
 
         return $this;
     }
