@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c94d353782e41c160a06d64b4aad61e9",
+    "content-hash": "14d268a95a61ab78001f40d4fbe40b5b",
     "packages": [
         {
             "name": "johnbillion/extended-cpts",
@@ -64,6 +64,10 @@
             ],
             "description": "A library which provides extended functionality to WordPress custom post types and taxonomies.",
             "homepage": "https://github.com/johnbillion/extended-cpts/",
+            "support": {
+                "issues": "https://github.com/johnbillion/extended-cpts/issues",
+                "source": "https://github.com/johnbillion/extended-cpts/tree/develop"
+            },
             "time": "2020-07-08T19:34:12+00:00"
         }
     ],
@@ -73,7 +77,9 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "^7.3"
+    },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.0.0"
 }

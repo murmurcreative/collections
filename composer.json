@@ -1,7 +1,7 @@
 {
     "name": "murmurcreative/collections",
     "description": "Simplify post type creation a bit.",
-    "type": "wordpress-muplugin",
+    "type": "package",
     "require": {
         "php": "^7.3",
         "johnbillion/extended-cpts": "^4.4"
