@@ -1,16 +1,23 @@
 {
-    "name": "murmurcreative/collections",
-    "description": "Simplify post type creation a bit.",
-    "type": "package",
-    "require": {
-        "php": "^7.3",
-        "johnbillion/extended-cpts": "^4.4",
-        "composer/installers": "^1.9"
-    },
-    "authors": [
-        {
-            "name": "Ben Martinez-Bateman",
-            "email": "ben@alwaysblank.org"
-        }
-    ]
+  "name": "murmurcreative/collections",
+  "description": "Simplify post type creation a bit.",
+  "type": "package",
+  "require": {
+    "php": "^7.3",
+    "johnbillion/extended-cpts": "^4.4",
+    "composer/installers": "^1.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "Murmur\\Collections\\": [
+        "src"
+      ]
+    }
+  },
+  "authors": [
+    {
+      "name": "Ben Martinez-Bateman",
+      "email": "ben@alwaysblank.dev"
+    }
+  ]
 }
